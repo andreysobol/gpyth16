@@ -1,3 +1,6 @@
+import bdb
+
+
 class Field:
 
     def __init__(self, value) -> None:
@@ -38,9 +41,14 @@ def get_q(u):
     q = 36*(u**4) + 36*(u**3) + 24*(u**2) + 6*u + 1
     return q
 
-class FieldQ12(Field):
+class FieldQ2(Field):
     pass
 
     @classmethod
     def add(cls, a, b):
         return cls([FieldQ.add(els[0], els[1]) for els in zip(a.value, b.value)])
+
+    def mul(cls, a, b):
+        r0 = a.value[0] * b.value[0] - a.value[1] * b.value[1]
+        r1 = a.value[0] * b.value[1] + a.value[1] * b.value[0]
+        return cls((r0, r1))
