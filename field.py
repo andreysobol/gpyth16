@@ -19,11 +19,11 @@ class FieldQ(Field):
 
     @classmethod
     def add(cls, a, b):
-        return (a.value + b.value) % cls.modulus
+        return cls((a.value + b.value) % cls.modulus)
 
     @classmethod
     def mul(cls, a, b):
-        return (a.value * b.value) % cls.modulus
+        return cls((a.value * b.value) % cls.modulus)
 
 def get_r(u):
     r = 36*(u**4) + 36*(u**3) + 18*(u**2) + 6*u + 1
@@ -37,3 +37,10 @@ class FieldR(Field):
 def get_q(u):
     q = 36*(u**4) + 36*(u**3) + 24*(u**2) + 6*u + 1
     return q
+
+class FieldQ12(Field):
+    pass
+
+    @classmethod
+    def add(cls, a, b):
+        return cls([FieldQ.add(els[0], els[1]) for els in zip(a.value, b.value)])
