@@ -17,6 +17,14 @@ class FieldQ(Field):
     modulus = get_q(madgic_u)
     generator = 2
 
+    @classmethod
+    def add(cls, a, b):
+        return (a.value + b.value) % cls.modulus
+
+    @classmethod
+    def mul(cls, a, b):
+        return (a.value * b.value) % cls.modulus
+
 def get_r(u):
     r = 36*(u**4) + 36*(u**3) + 18*(u**2) + 6*u + 1
     return r
