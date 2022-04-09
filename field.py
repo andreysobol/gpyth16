@@ -1,6 +1,3 @@
-import bdb
-
-
 class Field:
 
     def __init__(self, value) -> None:
