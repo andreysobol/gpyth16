@@ -46,6 +46,9 @@ class FieldQ(Field):
     def mul(cls, a, b):
         return cls((a.value * b.value) % cls.modulus)
 
+    def __repr__(self):
+        return "FieldQ(" + str(self.value) + ")"
+
 def get_r(u):
     r = 36*(u**4) + 36*(u**3) + 18*(u**2) + 6*u + 1
     return r
@@ -91,6 +94,9 @@ class FieldQ2(Field):
                 power //= 2
 
         return res
+
+    def __repr__(self):
+        return "FieldQ2(" + str(self.value) + ")"
 
 class FieldQ12(Field):
 
@@ -150,3 +156,6 @@ class FieldQ12(Field):
                 power //= 2
 
         return res
+
+    def __repr__(self):
+        return "FieldQ12(" + str(self.value) + ")"
