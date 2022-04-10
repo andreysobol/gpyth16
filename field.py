@@ -125,7 +125,7 @@ class FieldQ12(Field):
                     res[i+j],
                     FieldQ2.mul(
                         a.value[i],
-                        b.value[i],
+                        b.value[j],
                     )
                 )
 
