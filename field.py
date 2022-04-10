@@ -25,6 +25,10 @@ class FieldQ(Field):
         return cls((a.value + b.value) % cls.modulus)
 
     @classmethod
+    def sub(cls, a, b):
+        return cls((a.value - b.value) % cls.modulus)
+
+    @classmethod
     def mul(cls, a, b):
         return cls((a.value * b.value) % cls.modulus)
 
@@ -45,25 +49,39 @@ class FieldQ2(Field):
 
     @classmethod
     def add(cls, a, b):
-        return cls([FieldQ.add(FieldQ(els[0]), FieldQ(els[1])) for els in zip(a.value, b.value)])
+        return cls([FieldQ.add(els[0], els[1]) for els in zip(a.value, b.value)])
+
+    @classmethod
+    def sub(cls, a, b):
+        return cls([FieldQ.sub(FieldQ(els[0]), FieldQ(els[1])) for els in zip(a.value, b.value)])
 
     @classmethod
     def mul(cls, a, b):
-        r0 = a.value[0].value * b.value[0].value - a.value[1].value * b.value[1].value
-        r1 = a.value[0].value * b.value[1].value + a.value[1].value * b.value[0].value
-        return cls((FieldQ(r0), FieldQ(r1)))
+        r0 = FieldQ.sub(FieldQ.mul(a.value[0], b.value[0]), FieldQ.mul(a.value[1], b.value[1]))
+        r1 = FieldQ.add(FieldQ.mul(a.value[0], b.value[1]), FieldQ.mul(a.value[1], b.value[0]))
+        return cls([r0, r1])
 
 class FieldQ12(Field):
 
-    modules = [1, 0, 0, 0, 0, 0, FieldQ2([9, 1])]
+    modules = [FieldQ2([1, 0]),
+               FieldQ2([0, 0]),
+               FieldQ2([0, 0]),
+               FieldQ2([0, 0]),
+               FieldQ2([0, 0]),
+               FieldQ2([0, 0]),
+               FieldQ2([9, 1])]
 
     @classmethod
     def add(cls, a, b):
         return cls([FieldQ2.add(els[0], els[1]) for els in zip(a.value, b.value)])
 
     @classmethod
+    def sub(cls, a, b):
+        return cls([FieldQ2.sub(els[0], els[1]) for els in zip(a.value, b.value)])
+
+    @classmethod
     def mul(cls, a, b):
-        res = [FieldQ2([0, 0]) for i in range(11)]
+        res = [FieldQ2([FieldQ(0), FieldQ(0)]) for i in range(11)]
         for i in range(6):
             for j in range(6):
                 res[i+j] = FieldQ2.add(
@@ -78,7 +96,7 @@ class FieldQ12(Field):
             res[i] = FieldQ2.add(
                 res[i],
                 FieldQ2.mul(
-                    FieldQ2([9, 1]),
+                    FieldQ2([FieldQ(9), FieldQ(1)]),
                     res[i+6]
                 )
             )
@@ -86,15 +104,18 @@ class FieldQ12(Field):
         return FieldQ12(res[0:6])
 
     def pow(self, power):
-        curent = self
-        res = FieldQ12([FieldQ2([e, 0]) for e in [1, 0, 0, 0, 0, 0]])
+        current = self
+        res = FieldQ12([FieldQ2([
+            FieldQ(e),
+            FieldQ(0)
+        ]) for e in [1, 0, 0, 0, 0, 0]])
 
         while power > 0 :
             if power % 2 == 1 :
-                res = FieldQ12.mul(res, curent)
+                res = FieldQ12.mul(res, current)
                 power -= 1
             else:
-                curent = FieldQ12.mul(curent, curent)
+                current = FieldQ12.mul(current, current)
                 power //= 2
 
         return res

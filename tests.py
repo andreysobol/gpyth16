@@ -14,7 +14,7 @@ class UnitTest(unittest.TestCase):
             FieldQ2([FieldQ(11), FieldQ(12)]),
         ])
         r = f.pow(FieldQ.modulus**12 - 1)
-        print(r)
+        print(r.value)
         self.assertEqual(True, True)
 
 
