@@ -49,9 +49,9 @@ class FieldQ2(Field):
 
     @classmethod
     def mul(cls, a, b):
-        r0 = a.value[0] * b.value[0] - a.value[1] * b.value[1]
-        r1 = a.value[0] * b.value[1] + a.value[1] * b.value[0]
-        return cls((r0, r1))
+        r0 = a.value[0].value * b.value[0].value - a.value[1].value * b.value[1].value
+        r1 = a.value[0].value * b.value[1].value + a.value[1].value * b.value[0].value
+        return cls((FieldQ(r0), FieldQ(r1)))
 
 class FieldQ12(Field):
 
