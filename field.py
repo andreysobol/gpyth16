@@ -1,3 +1,6 @@
+import sys
+sys.setrecursionlimit(5000)
+
 class Field:
 
     def __init__(self, value) -> None:
@@ -88,8 +91,9 @@ class FieldQ12(Field):
         if power == 0:
             return res
         if power % 2 == 0:
-            res = FieldQ12.pow(self, power / 2)
+            res = FieldQ12.pow(self, power // 2)
             return FieldQ12.mul(res, res)
         else:
             res = FieldQ12.pow(self, power - 1)
             return FieldQ12.mul(res, self)
+
