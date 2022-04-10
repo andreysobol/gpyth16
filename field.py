@@ -28,6 +28,20 @@ class FieldQ(Field):
     def sub(cls, a, b):
         return cls((a.value - b.value) % cls.modulus)
 
+    def pow(self, power):
+        current = self
+        res = FieldQ(1)
+
+        while power > 0 :
+            if power % 2 == 1 :
+                res = FieldQ.mul(res, current)
+                power -= 1
+            else:
+                current = FieldQ.mul(current, current)
+                power //= 2
+
+        return res
+
     @classmethod
     def mul(cls, a, b):
         return cls((a.value * b.value) % cls.modulus)
@@ -60,6 +74,23 @@ class FieldQ2(Field):
         r0 = FieldQ.sub(FieldQ.mul(a.value[0], b.value[0]), FieldQ.mul(a.value[1], b.value[1]))
         r1 = FieldQ.add(FieldQ.mul(a.value[0], b.value[1]), FieldQ.mul(a.value[1], b.value[0]))
         return cls([r0, r1])
+
+    def pow(self, power):
+        current = self
+        res = FieldQ2([
+            FieldQ(1),
+            FieldQ(0)
+        ])
+
+        while power > 0 :
+            if power % 2 == 1 :
+                res = FieldQ2.mul(res, current)
+                power -= 1
+            else:
+                current = FieldQ2.mul(current, current)
+                power //= 2
+
+        return res
 
 class FieldQ12(Field):
 
