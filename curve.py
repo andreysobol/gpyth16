@@ -30,7 +30,7 @@ class EllipticCurveG1(EllipticCurve):
     def b_coeff(cls):
         return FieldQ(3)
 
-class EllipticCurveG1(EllipticCurve):
+class EllipticCurveG2(EllipticCurve):
 
     @classmethod
     def generator(cls):

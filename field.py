@@ -46,6 +46,9 @@ class FieldQ(Field):
     def mul(cls, a, b):
         return cls((a.value * b.value) % cls.modulus)
 
+    def inverce(self):
+        return self.pow(FieldQ.modulus - 2)
+
     def __repr__(self):
         return "FieldQ(" + str(self.value) + ")"
 
@@ -94,6 +97,9 @@ class FieldQ2(Field):
                 power //= 2
 
         return res
+
+    def inverce(self):
+        return self.pow(FieldQ.modulus - 2)
 
     def __repr__(self):
         return "FieldQ2(" + str(self.value) + ")"
