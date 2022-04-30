@@ -1,3 +1,5 @@
+import copy
+
 b0_montgomery = 16772280239760917788496391897731603718812008455956943122563801666366297604776
 gminus1 = pow(2, 256 * (q-2), FieldQ.modulo)
 b0 = (gminus1 * b0_montgomery) % q
@@ -12,9 +14,17 @@ from field import FieldQ12, FieldQ2, FieldQ
 
 class EllipticCurve:
 
-    def __init__(self, x_coord, y_coord) -> None:
-        self.x_coord = x_coord
-        self.y_coord = y_coord
+    def __init__(*args):
+        if len(args) == 1:
+            self = args[0]
+            self.is_inf = True
+            return
+        else:
+            self = args[0]
+            self.x_coord = args[1]
+            self.y_coord = args[2]
+            self.is_inf = False
+            return
 
 class EllipticCurveG1(EllipticCurve):
 
@@ -29,6 +39,81 @@ class EllipticCurveG1(EllipticCurve):
     @classmethod
     def b_coeff(cls):
         return FieldQ(3)
+
+    def double(self):
+        pass
+
+    def mul_by_scalar(self, scalar):
+        scalar_value = scalar.value
+
+        current = self
+        res = EllipticCurveG1()
+
+        while scalar_value > 0:
+            if scalar_value % 2 == 1:
+                res = res.add(current)
+                scalar_value -= 1
+            else:
+                current = current.add(current)
+                scalar_value //= 2
+
+        return res
+
+    def add(self, other):
+
+        if self.is_inf and other.is_inf:
+            return EllipticCurveG1()
+
+        if self.is_inf and (not other.is_inf):
+            return copy.copy(other)
+
+        if (not self.is_inf) and other.is_inf:
+            return copy.copy(self)
+
+        if (
+            (self.x_coord.value == other.x_coord.value) and
+            (self.y_coord.value == -other.y_coord.value)
+        ):
+            return EllipticCurveG1()
+
+        if (
+            (self.x_coord.value == other.x_coord.value) and
+            (self.y_coord.value == other.y_coord.value)
+        ):
+            s = FieldQ.div(
+                FieldQ.mul(
+                    FieldQ.mul(
+                        FieldQ(3),
+                        self.x_coord
+                    ),
+
+                    self.x_coord
+                ),
+                FieldQ.mul(self.y_coord, FieldQ(2))
+            )
+        else:
+            s = FieldQ.div(
+                FieldQ.sub(self.y_coord, other.y_coord),
+                FieldQ.sub(self.x_coord, other.x_coord)
+            )
+
+        s_2 = FieldQ.mul(s, s)
+
+        result_x_coord = FieldQ.sub(
+            s_2,
+            FieldQ.add(self.x_coord, other.x_coord)
+        )
+
+        result_y_coord = FieldQ.sub(
+            FieldQ.mul(
+                FieldQ.sub(self.x_coord, result_x_coord),
+                s
+            ),
+            self.y_coord,
+        )
+
+        return EllipticCurveG1(result_x_coord, result_y_coord)
+
 
 class EllipticCurveG2(EllipticCurve):
 

@@ -1,6 +1,8 @@
 import unittest
 
-from field import FieldQ12, FieldQ2, FieldQ
+from field import FieldQ12, FieldQ2, FieldQ, FieldR
+from curve import EllipticCurveG1
+
 
 class UnitTest(unittest.TestCase):
 
@@ -52,6 +54,15 @@ class UnitTest(unittest.TestCase):
             self.assertEqual(r.value[i].value[1].value, 0)
             self.assertEqual(r.value[i].value[0].value, 0)
 
+
+class CurveTest(unittest.TestCase):
+
+    def test_curve(self):
+        generator = EllipticCurveG1.generator()
+        scalar = FieldR(FieldR.modules - 1)
+        result = generator.mul_by_scalar(scalar)
+        self.assertEqual(result.x_coord.value, 1)
+        self.assertEqual(result.y_coord.value, FieldQ.modulus - 2)
 
 
 if __name__ == '__main__':

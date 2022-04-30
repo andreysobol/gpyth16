@@ -49,6 +49,11 @@ class FieldQ(Field):
     def inverce(self):
         return self.pow(FieldQ.modulus - 2)
 
+    @classmethod
+    def div(cls, a, b):
+        b_inv = b.inverce()
+        return FieldQ.mul(a, b_inv)
+
     def __repr__(self):
         return "FieldQ(" + str(self.value) + ")"
 
