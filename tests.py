@@ -62,7 +62,7 @@ class CurveTest(unittest.TestCase):
         scalar = FieldR(FieldR.modules - 1)
         result = generator.mul_by_scalarr(scalar)
         self.assertEqual(result.x_coord.value[0].value, generator.x_coord.value[0].value)
-        self.assertEqual(result.y_coord.value[1].value, generator.y_coord.value[1].value)
+        self.assertEqual(result.x_coord.value[1].value, generator.x_coord.value[1].value)
 
     def test_curve_g1(self):
         generator = EllipticCurveG1.generator()
