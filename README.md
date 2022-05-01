@@ -6,3 +6,5 @@ Groth 16
 Magic u source: https://tools.ietf.org/id/draft-yonezawa-pairing-friendly-curves-00.html#ISOIEC15946-5
 
 Pairing related shit: https://eprint.iacr.org/2008/096.pdf
+
+Unpublished manuscript: http://crypto.stanford.edu/miller/miller.pdf.
