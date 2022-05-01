@@ -42,9 +42,6 @@ class EllipticCurveG1(EllipticCurve):
     def b_coeff(cls):
         return FieldQ(3)
 
-    def double(self):
-        pass
-
     def mul_by_scalar(self, scalar):
         scalar_value = scalar.value
 
@@ -139,3 +136,75 @@ class EllipticCurveG2(EllipticCurve):
                     FieldQ(b0),
                     FieldQ(b1)
                 ])
+
+    def mul_by_scalar(self, scalar):
+        scalar_value = scalar.value
+
+        current = self
+        res = EllipticCurveG2()
+
+        while scalar_value > 0:
+            if scalar_value % 2 == 1:
+                res = res.add(current)
+                scalar_value -= 1
+            else:
+                current = current.add(current)
+                scalar_value //= 2
+
+        return res
+
+    def add(self, other):
+
+        if self.is_inf and other.is_inf:
+            return EllipticCurveG2()
+
+        if self.is_inf and (not other.is_inf):
+            return copy.copy(other)
+
+        if (not self.is_inf) and other.is_inf:
+            return copy.copy(self)
+
+        if (
+            (self.x_coord.value == other.x_coord.value) and
+            (self.y_coord.value == -other.y_coord.value)
+        ):
+            return EllipticCurveG2()
+
+        if (
+            (self.x_coord.value == other.x_coord.value) and
+            (self.y_coord.value == other.y_coord.value)
+        ):
+            s = FieldQ2.div(
+                FieldQ2.mul(
+                    FieldQ2.mul(
+                        FieldQ2(FieldQ(3), FieldQ(0)),
+                        self.x_coord
+                    ),
+
+                    self.x_coord
+                ),
+                FieldQ2.mul(self.y_coord, FieldQ2(FieldQ(2), FieldQ(0)))
+            )
+        else:
+            s = FieldQ2.div(
+                FieldQ2.sub(self.y_coord, other.y_coord),
+                FieldQ2.sub(self.x_coord, other.x_coord)
+            )
+
+        s_2 = FieldQ2.mul(s, s)
+
+        result_x_coord = FieldQ2.sub(
+            s_2,
+            FieldQ2.add(self.x_coord, other.x_coord)
+        )
+
+        result_y_coord = FieldQ2.sub(
+            FieldQ2.mul(
+                FieldQ2.sub(self.x_coord, result_x_coord),
+                s
+            ),
+            self.y_coord,
+        )
+
+        return EllipticCurveG2(result_x_coord, result_y_coord)
+
