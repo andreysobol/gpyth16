@@ -78,7 +78,7 @@ class FieldQ2(Field):
 
     @classmethod
     def sub(cls, a, b):
-        return cls([FieldQ.sub(FieldQ(els[0]), FieldQ(els[1])) for els in zip(a.value, b.value)])
+        return cls([FieldQ.sub(els[0], els[1]) for els in zip(a.value, b.value)])
 
     @classmethod
     def mul(cls, a, b):
