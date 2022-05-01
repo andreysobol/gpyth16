@@ -118,7 +118,7 @@ class EllipticCurveG2(EllipticCurve):
 
     @classmethod
     def generator(cls):
-        gen = EllipticCurveG1(
+        gen = EllipticCurveG2(
             FieldQ2([
                 FieldQ(x0),
                 FieldQ(x1)
@@ -137,7 +137,7 @@ class EllipticCurveG2(EllipticCurve):
                     FieldQ(b1)
                 ])
 
-    def mul_by_scalar(self, scalar):
+    def mul_by_scalarr(self, scalar):
         scalar_value = scalar.value
 
         current = self
@@ -165,25 +165,29 @@ class EllipticCurveG2(EllipticCurve):
             return copy.copy(self)
 
         if (
-            (self.x_coord.value == other.x_coord.value) and
-            (self.y_coord.value == -other.y_coord.value)
+            (self.x_coord.value[0].value == other.x_coord.value[0].value) and
+            (self.x_coord.value[1].value == other.x_coord.value[1].value) and
+            (self.y_coord.value[0].value == -other.y_coord.value[0].value) and
+            (self.y_coord.value[1].value == -other.y_coord.value[1].value)
         ):
             return EllipticCurveG2()
 
         if (
-            (self.x_coord.value == other.x_coord.value) and
-            (self.y_coord.value == other.y_coord.value)
+            (self.x_coord.value[0].value == other.x_coord.value[0].value) and
+            (self.x_coord.value[1].value == other.x_coord.value[1].value) and
+            (self.y_coord.value[0].value == other.y_coord.value[0].value) and
+            (self.y_coord.value[1].value == other.y_coord.value[1].value)
         ):
             s = FieldQ2.div(
                 FieldQ2.mul(
                     FieldQ2.mul(
-                        FieldQ2(FieldQ(3), FieldQ(0)),
+                        FieldQ2([FieldQ(3), FieldQ(0)]),
                         self.x_coord
                     ),
 
                     self.x_coord
                 ),
-                FieldQ2.mul(self.y_coord, FieldQ2(FieldQ(2), FieldQ(0)))
+                FieldQ2.mul(self.y_coord, FieldQ2([FieldQ(2), FieldQ(0)]))
             )
         else:
             s = FieldQ2.div(
