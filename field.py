@@ -116,6 +116,7 @@ class FieldQ2(Field):
 
 class FieldQ12(Field):
 
+    # i think we should fix this
     modules = [FieldQ2([1, 0]),
                FieldQ2([0, 0]),
                FieldQ2([0, 0]),
